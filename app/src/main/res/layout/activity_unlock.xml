@@ -10,12 +10,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/pin_label"
-        android:labelFor="@id/pin"
+        android:labelFor="@+id/pin"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="100dp"/>
 
     <EditText
-        android:id="@+id/pin"
+        android:id="@id/pin"
         android:inputType="numberPassword"
         android:layout_width="80dp"
         android:layout_height="wrap_content"

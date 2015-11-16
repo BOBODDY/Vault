@@ -20,6 +20,14 @@
             android:name=".activities.MainActivity"
             android:label="@string/title_activity_main" >
         </activity>
+        <activity
+            android:name=".activities.ImagesActivity"
+            android:label="@string/title_activity_images"
+            android:parentActivityName=".activities.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.boboddy.vault.activities.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

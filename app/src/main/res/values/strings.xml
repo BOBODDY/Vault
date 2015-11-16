@@ -5,7 +5,8 @@
     
     <string name="pin_label">Enter PIN</string>
     <string name="wrong_pin">Wrong PIN</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main">Main</string>
 
     <string name="hello_world">Hello world!</string>
+    <string name="title_activity_images">Images</string>
 </resources>
