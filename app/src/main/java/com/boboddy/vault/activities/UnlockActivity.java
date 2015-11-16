@@ -1,4 +1,4 @@
-package com.boboddy.vault;
+package com.boboddy.vault.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,6 +10,8 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.boboddy.vault.R;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.MessageDigest;
