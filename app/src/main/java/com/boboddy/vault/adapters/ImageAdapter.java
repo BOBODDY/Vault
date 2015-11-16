@@ -39,9 +39,13 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     public void onBindViewHolder(ImageAdapter.ViewHolder vh, int position) {
         
     }
+    
+    public void addItems(List<Picture> newData) {
+        dataset.addAll(newData);
+    }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return dataset.size();
     }
 }

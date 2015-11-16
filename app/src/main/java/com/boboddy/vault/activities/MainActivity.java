@@ -1,9 +1,11 @@
 package com.boboddy.vault.activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.boboddy.vault.R;
 
@@ -35,5 +37,10 @@ public class MainActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+    
+    public void goToImages(View v) {
+        Intent i = new Intent(this, ImagesActivity.class);
+        startActivity(i);
     }
 }
