@@ -1,5 +1,6 @@
 package com.boboddy.vault.db;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -69,5 +70,22 @@ public class Database {
         c.close();
         
         return pictures;
+    }
+    
+    public boolean addPicture(Picture newPic) {
+        if(dbHelper == null) {
+            initializeDbHelper();
+        }
+        
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(PictureEntry.COLUMN_NAME_PATH, newPic.getPath());
+        
+        long newRowId = db.insert(PictureEntry.TABLE_NAME, null, values);
+        
+        db.close();
+        
+        return newRowId != -1;
     }
 }

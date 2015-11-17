@@ -10,4 +10,12 @@ public class Picture {
     public Picture(String filepath) {
         this.filepath = filepath;
     }
+    
+    public String getPath() {
+        return filepath;
+    }
+    
+    public void setPath(String newPath) {
+        this.filepath = newPath;
+    }
 }
