@@ -33,7 +33,7 @@ public class ImagesActivity extends Activity {
         
         imagesRV = (RecyclerView) findViewById(R.id.imagesRV);
         
-        layoutAdapter = new ImageAdapter();
+        layoutAdapter = new ImageAdapter(getApplicationContext());
         imagesRV.setAdapter(layoutAdapter);
         
         layoutManager = new GridLayoutManager(this, spanCount);
