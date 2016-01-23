@@ -9,4 +9,6 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_images">Images</string>
+
+    <string name="fingerprintLabel">Swipe finger to unlock</string>
 </resources>
