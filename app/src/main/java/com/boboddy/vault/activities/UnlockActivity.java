@@ -64,15 +64,19 @@ public class UnlockActivity extends Activity {
         
         pin = (EditText) findViewById(R.id.pin);
         pin.addTextChangedListener(new PinWatcher());
+
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, 0);
+        if(prefs.getString("user_pin", null) == null) {
+            Log.d("Vault", "no PIN saved, launching PIN create activity");
+            Intent i = new Intent(this, CreatePinActivity.class);
+            startActivity(i);
+        }
     }
 
     private boolean checkPin(String pin) {
         boolean res = true;
 
         if(pin.length() == 4) {
-            if(pin.equals("1234")) { // TODO: add activity for creating a new PIN
-                return true;
-            }
             SharedPreferences prefs = getSharedPreferences(PREFS_NAME, 0);
 
             String storedHash = prefs.getString("user_pin", "");
