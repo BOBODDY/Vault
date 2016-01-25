@@ -17,4 +17,5 @@
     <string name="create_pin_1">Enter PIN:</string>
     <string name="create_pin_2">Re-enter PIN:</string>
     <string name="done_button">Done</string>
+    <string name="no_pin">You don\'t have a PIN created. You need to create one to use this app.</string>
 </resources>

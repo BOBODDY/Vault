@@ -1,6 +1,8 @@
 package com.boboddy.vault.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -68,8 +70,23 @@ public class UnlockActivity extends Activity {
         SharedPreferences prefs = getSharedPreferences(PREFS_NAME, 0);
         if(prefs.getString("user_pin", null) == null) {
             Log.d("Vault", "no PIN saved, launching PIN create activity");
-            Intent i = new Intent(this, CreatePinActivity.class);
-            startActivity(i);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(R.string.no_pin)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // FIRE ZE MISSILES!
+                            Intent i = new Intent(getApplicationContext(), CreatePinActivity.class);
+                            startActivity(i);
+                        }
+                    })
+                    .setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            finish();
+                        }
+                    });
+            // Create the AlertDialog object and show it
+            builder.create();
+            builder.show();
         }
     }
 
