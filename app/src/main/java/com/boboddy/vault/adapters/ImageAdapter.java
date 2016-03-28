@@ -10,6 +10,7 @@ import android.widget.ImageView;
 
 import com.boboddy.vault.R;
 import com.boboddy.vault.data.Picture;
+import com.boboddy.vault.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +49,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     
     public void onBindViewHolder(ImageAdapter.ViewHolder vh, int position) {
         Picture pic = dataset.get(position);
-        vh.imageView.setImageBitmap(BitmapFactory.decodeFile(pic.getPath())); // TODO: get thumbnail
+        vh.imageView.setImageBitmap(Util.getThumbnail(pic.getPath()));
     }
     
     public void addItems(List<Picture> newData) {

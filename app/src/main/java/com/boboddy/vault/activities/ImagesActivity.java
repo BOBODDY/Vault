@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -36,7 +37,7 @@ public class ImagesActivity extends Activity {
         layoutAdapter = new ImageAdapter(getApplicationContext());
         imagesRV.setAdapter(layoutAdapter);
         
-        layoutManager = new GridLayoutManager(this, spanCount);
+        layoutManager = new StaggeredGridLayoutManager(spanCount, StaggeredGridLayoutManager.VERTICAL);
         imagesRV.setLayoutManager(layoutManager);
         
         new LoadImagesTask().execute();
