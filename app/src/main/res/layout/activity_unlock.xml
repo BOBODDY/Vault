@@ -23,4 +23,23 @@
         android:layout_marginTop="15dp"
         android:layout_below="@id/pin_label"/>
 
+
+    <ImageView
+        android:src="@drawable/ic_fp_40px"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/fingerprintIcon"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="25dp" />
+
+    <TextView
+        android:id="@+id/fingerprintLabel"
+        android:text="@string/fingerprintLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/fingerprintIcon"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="15dp"/>
+
 </RelativeLayout>

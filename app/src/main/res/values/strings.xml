@@ -2,11 +2,20 @@
     <string name="app_name">Vault</string>
 
     <string name="action_settings">Settings</string>
-    
+
     <string name="pin_label">Enter PIN</string>
     <string name="wrong_pin">Wrong PIN</string>
     <string name="title_activity_main">Vault</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_images">Images</string>
+
+    <string name="fingerprintLabel">Swipe finger to unlock</string>
+
+
+    <string name="title_activity_create_pin">Create PIN</string>
+    <string name="create_pin_1">Enter PIN:</string>
+    <string name="create_pin_2">Re-enter PIN:</string>
+    <string name="done_button">Done</string>
+    <string name="no_pin">You don\'t have a PIN created. You need to create one to use this app.</string>
 </resources>
