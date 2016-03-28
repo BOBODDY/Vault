@@ -47,20 +47,38 @@ public class ImageReceiver extends Activity {
     
     public void handleSendImage(Intent intent) {
         Uri imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        saveImage(imageUri);
+    }
+
+    public void handleSendMultipleImages(Intent intent) {
+        ArrayList<Uri> imageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+        if(imageUris != null) {
+            // Add images to database, copy to private file directory
+            for(int i=0; i < imageUris.size(); i++) {
+                saveImage(imageUris.get(i));
+            }
+        }
+    }
+
+    private void saveImage(Uri imageUri) {
         if(imageUri != null) {
             // Add image to database, copy to private file directory
 
             String path = getFilesDir() + File.separator + getImageFileName();
+            Log.v("Vault", "saving picture to " + path);
             File f = new File(path);
             Picture sentPic = new Picture(path);
             try {
                 FileOutputStream fos = new FileOutputStream(f);
                 Bitmap bmp = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                Log.d("Vault", "image is " + bmp.getHeight() + " pixels tall");
 
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
                 bmp.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-                
+
                 fos.write(outputStream.toByteArray());
+
+                outputStream.close();
                 fos.close();
             } catch(FileNotFoundException fnfe) {
                 Log.e("Vault", "file not found", fnfe);
@@ -69,17 +87,15 @@ public class ImageReceiver extends Activity {
             }
 
             Database db = new Database(this);
-            db.addPicture(sentPic);
+            boolean res = db.addPicture(sentPic);
 
-            Toast.makeText(this, "Locked away", Toast.LENGTH_SHORT).show();
+            if(res) {
+                Toast.makeText(this, "Locked away", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Problem saving", Toast.LENGTH_SHORT).show();
+            }
+
             finish();
-        }
-    }
-    
-    public void handleSendMultipleImages(Intent intent) {
-        ArrayList<Uri> imageUris = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
-        if(imageUris != null) {
-            // Add images to database, copy to private file directory
         }
     }
 
