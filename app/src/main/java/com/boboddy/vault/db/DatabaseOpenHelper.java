@@ -15,12 +15,12 @@ public class DatabaseOpenHelper extends SQLiteOpenHelper {
     private static final String TAG = "Vault";
 
     private static final String DB_NAME = "pictures";
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;
 
     private static final String PICTURE_TABLE_CREATE =
             "CREATE TABLE " + PictureEntry.TABLE_NAME + " (" +
                     PictureEntry._ID + " INTEGER PRIMARY KEY, " +
-                    PictureEntry.COLUMN_NAME_PATH + ");";
+                    PictureEntry.COLUMN_NAME_PATH + " TEXT);";
     
     private static final String PICTURE_TABLE_DELETE = "" +
             "DROP TABLE IF EXISTS " + PictureEntry.TABLE_NAME;
