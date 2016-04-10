@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.boboddy.vault.data.Picture;
 import com.boboddy.vault.db.Database;
+import com.boboddy.vault.util.Util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -64,7 +65,7 @@ public class ImageReceiver extends Activity {
         if(imageUri != null) {
             // Add image to database, copy to private file directory
 
-            String path = getFilesDir() + File.separator + getImageFileName();
+            String path = Util.createFilename(this);
             Log.v("Vault", "saving picture to " + path);
             File f = new File(path);
             Picture sentPic = new Picture(path);
@@ -97,14 +98,5 @@ public class ImageReceiver extends Activity {
 
             finish();
         }
-    }
-
-    private String getImageFileName() {
-        String filename = "";
-
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        filename = timeStamp + ".png";
-
-        return filename;
     }
 }

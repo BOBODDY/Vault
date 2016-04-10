@@ -1,12 +1,30 @@
 package com.boboddy.vault.util;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by nick on 3/27/16.
  */
 public class Util {
+    
+    public static String createFilename(Context ctx) {
+        return ctx.getFilesDir() + File.separator + getImageFileName();
+    }
+
+    private static String getImageFileName() {
+        String filename = "";
+
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        filename = timeStamp + ".png";
+
+        return filename;
+    }
 
     public static Bitmap getThumbnail(String filepath) {
         Bitmap bmp = null;
