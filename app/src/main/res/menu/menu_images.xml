@@ -3,4 +3,5 @@
     tools:context="com.boboddy.vault.activities.ImagesActivity">
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" android:showAsAction="never" />
+    <item android:id="@+id/action_image" android:title="Add Image" android:orderInCategory="1" />
 </menu>

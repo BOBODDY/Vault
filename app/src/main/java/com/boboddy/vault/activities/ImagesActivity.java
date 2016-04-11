@@ -1,13 +1,16 @@
 package com.boboddy.vault.activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.boboddy.vault.R;
 import com.boboddy.vault.adapters.ImageAdapter;
@@ -60,6 +63,10 @@ public class ImagesActivity extends Activity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        } else if(id == R.id.action_image) {
+            Log.d("Vault", "taking picture");
+            Intent i = new Intent(this, Camera.class);
+            startActivity(i);
         }
 
         return super.onOptionsItemSelected(item);
