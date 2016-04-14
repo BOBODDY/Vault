@@ -1,89 +1,146 @@
 package com.boboddy.vault.activities;
 
-import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
-import android.content.pm.PackageManager;
-import android.graphics.ImageFormat;
-import android.hardware.camera2.CameraAccessException;
-import android.hardware.camera2.CameraCaptureSession;
-import android.hardware.camera2.CameraCharacteristics;
-import android.hardware.camera2.CameraDevice;
-import android.hardware.camera2.CameraManager;
-import android.hardware.camera2.params.StreamConfigurationMap;
-import android.media.ImageReader;
+import android.app.DialogFragment;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
-import android.util.Size;
+import android.view.Display;
 import android.view.Surface;
+import android.view.View;
+import android.widget.FrameLayout;
 
-import com.boboddy.vault.ImageReceiver;
 import com.boboddy.vault.R;
+import com.boboddy.vault.util.CameraPreview;
+import com.boboddy.vault.util.Util;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Camera extends Activity {
 
-    CameraManager cameraManager;
-    CameraDevice cameraDevice;
-
+    private android.hardware.Camera camera;
+    private CameraPreview preview;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
 
-        int cameraPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
-        if(cameraPermission == PackageManager.PERMISSION_GRANTED) {
-            cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+        camera = getCameraInstance();
+        if(camera != null) {
+            preview = new CameraPreview(this, camera);
+            FrameLayout previewLayout = (FrameLayout) findViewById(R.id.camera_preview);
+            previewLayout.addView(preview);
+        }
+    }
 
-            try {
-                cameraManager.openCamera("0", new CameraDevice.StateCallback() {
-                    @Override
-                    public void onOpened(CameraDevice camera) {
-                        cameraDevice = camera;
-                    }
+    protected void onPause() {
+        super.onPause();
+        releaseCamera();
+    }
 
-                    @Override
-                    public void onDisconnected(CameraDevice camera) {
+    private void releaseCamera() {
+        if(camera != null) {
+            camera.release();
+            camera = null;
+        }
+    }
 
-                    }
+    private android.hardware.Camera.PictureCallback mPicture = new android.hardware.Camera.PictureCallback() {
+        @Override
+        public void onPictureTaken(byte[] data, android.hardware.Camera camera) {
+            Log.v("Vault", "in PictureCallback");
 
-                    @Override
-                    public void onError(CameraDevice camera, int error) {
+            String s = getFilesDir() + File.separator + Util.createFilename(getApplicationContext());
+            File tmpF = new File(s);
 
-                    }
-                }, null);
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeByteArray(data, 0, data.length, options);
 
-                CameraCharacteristics characteristics = cameraManager.getCameraCharacteristics("0");
+            options.inSampleSize = calculateInSampleSize(options, 200, 200);
 
-                StreamConfigurationMap configs = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
-                
-                Size[] sizes = configs.getOutputSizes(ImageFormat.JPEG);
-                ImageReader imageReader = ImageReader.newInstance(sizes[0].getWidth(), 
-                        sizes[0].getHeight(), ImageFormat.JPEG, 2);
-                
-                Surface jpegCaptureSurface = imageReader.getSurface();
+            options.inJustDecodeBounds = false;
 
-                List<Surface> surfaces = new ArrayList<Surface>();
-                surfaces.add(jpegCaptureSurface);
-                
-                cameraDevice.createCaptureSession(surfaces,
-                        new CameraCaptureSession.StateCallback() {
-                            @Override
-                            public void onConfigured(CameraCaptureSession session) {
-                                
-                            }
+            Bitmap bmp = BitmapFactory.decodeByteArray(data, 0, data.length, options);
 
-                            @Override
-                            public void onConfigureFailed(CameraCaptureSession session) {
+            int displayRotation = getDisplayRotation();
+            bmp = rotateBitmap(bmp, displayRotation);
 
-                            }
-                        }, null);
-            }catch(CameraAccessException cae) {
-                Log.e("Vault", "problem opening camera", cae);
+            ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+
+            bmp.compress(Bitmap.CompressFormat.PNG, 100, byteStream);
+
+        }
+    };
+
+    public static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) > reqHeight
+                    && (halfWidth / inSampleSize) > reqWidth) {
+                inSampleSize *= 2;
             }
         }
+
+        return inSampleSize;
+    }
+
+    private Bitmap rotateBitmap(Bitmap in, int angle) {
+        Matrix mat = new Matrix();
+        mat.postRotate(angle);
+        return Bitmap.createBitmap(in, 0, 0, in.getWidth(), in.getHeight(), mat, true);
+    }
+
+    public static android.hardware.Camera getCameraInstance(){
+        android.hardware.Camera c = null;
+        try {
+            if(android.hardware.Camera.getNumberOfCameras() > 1) {
+                c = android.hardware.Camera.open(android.hardware.Camera.CameraInfo.CAMERA_FACING_BACK);
+            }
+        }
+        catch (Exception e){
+            // Camera is not available (in use or does not exist)
+            Log.e("Vault", "Camera is not available (in use or does not exist)", e);
+        }
+        return c; // returns null if camera is unavailable
+    }
+
+    private int getDisplayRotation() {
+        Display display = getWindowManager().getDefaultDisplay();
+        int rotation = 0;
+        switch (display.getRotation()) {
+            case Surface.ROTATION_0: // This is display orientation
+                rotation = 270;
+                break;
+            case Surface.ROTATION_90:
+                rotation = 0;
+                break;
+            case Surface.ROTATION_180:
+                rotation = 90;
+                break;
+            case Surface.ROTATION_270:
+                rotation = 180;
+                break;
+        }
+        return rotation;
     }
 }
