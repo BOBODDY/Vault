@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.Surface;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 
 import com.boboddy.vault.R;
@@ -19,6 +20,8 @@ import com.boboddy.vault.util.Util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -39,6 +42,14 @@ public class Camera extends Activity {
             FrameLayout previewLayout = (FrameLayout) findViewById(R.id.camera_preview);
             previewLayout.addView(preview);
         }
+
+        Button capture = (Button) findViewById(R.id.camera_capture);
+        capture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                camera.takePicture(null, null, picture);
+            }
+        });
     }
 
     protected void onPause() {
@@ -53,12 +64,12 @@ public class Camera extends Activity {
         }
     }
 
-    private android.hardware.Camera.PictureCallback mPicture = new android.hardware.Camera.PictureCallback() {
+    private android.hardware.Camera.PictureCallback picture = new android.hardware.Camera.PictureCallback() {
         @Override
         public void onPictureTaken(byte[] data, android.hardware.Camera camera) {
             Log.v("Vault", "in PictureCallback");
 
-            String s = getFilesDir() + File.separator + Util.createFilename(getApplicationContext());
+            String s = Util.createFilename(getApplicationContext());
             File tmpF = new File(s);
 
             BitmapFactory.Options options = new BitmapFactory.Options();
@@ -78,6 +89,16 @@ public class Camera extends Activity {
 
             bmp.compress(Bitmap.CompressFormat.PNG, 100, byteStream);
 
+            try {
+                FileOutputStream fos = new FileOutputStream(tmpF);
+                fos.write(byteStream.toByteArray(), 0, byteStream.size());
+                fos.close();
+            } catch(FileNotFoundException fnfe) {
+                Log.e("Vault", "file not found", fnfe);
+            } catch(IOException ioe) {
+                Log.e("Vault", "error", ioe);
+            }
+            finish();
         }
     };
 
