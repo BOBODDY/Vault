@@ -56,7 +56,17 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.boboddy.vault.activities.UnlockActivity" />
         </activity>
-        <activity android:name=".activities.Camera"></activity>
+        <activity android:name=".activities.Camera" />
+        <activity
+            android:name=".ViewImageActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_view_image"
+            android:parentActivityName=".activities.ImagesActivity"
+            android:theme="@style/FullscreenTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.boboddy.vault.activities.ImagesActivity" />
+        </activity>
     </application>
 
 </manifest>

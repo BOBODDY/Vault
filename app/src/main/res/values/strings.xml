@@ -18,4 +18,8 @@
     <string name="create_pin_2">Re-enter PIN:</string>
     <string name="done_button">Done</string>
     <string name="no_pin">You don\'t have a PIN created. You need to create one to use this app.</string>
+
+    <string name="title_activity_view_image">Image</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>
