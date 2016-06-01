@@ -75,10 +75,12 @@ public class ImagesActivity extends Activity {
         } else if(id == R.id.action_image) {
             Log.d("Vault", "taking picture");
             if(checkCameraPermission()) {
-                Intent i = new Intent();
-                i.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-                i.putExtra(MediaStore.EXTRA_OUTPUT, Util.createFilename(this));
-                startActivityForResult(i, TAKE_PICTURE);
+//                Intent i = new Intent();
+//                i.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+//                i.putExtra(MediaStore.EXTRA_OUTPUT, Util.createFilename(this));
+//                startActivityForResult(i, TAKE_PICTURE);
+                Intent i = new Intent(this, Camera.class);
+                startActivity(i);
             } else {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION);
             }
@@ -92,10 +94,12 @@ public class ImagesActivity extends Activity {
             case CAMERA_PERMISSION: {
                 if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission granted, accessing camera
-                    Intent i = new Intent();
-                    i.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-                    i.putExtra(MediaStore.EXTRA_OUTPUT, Util.createFilename(this));
-                    startActivityForResult(i, TAKE_PICTURE);
+//                    Intent i = new Intent();
+//                    i.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+//                    i.putExtra(MediaStore.EXTRA_OUTPUT, Util.createFilename(this));
+//                    startActivityForResult(i, TAKE_PICTURE);
+                    Intent i = new Intent(this, Camera.class);
+                    startActivity(i);
                 } else {
                     Log.d("Vault", "Camera permission denied");
                     Toast.makeText(this, "Camera permission denied", Toast.LENGTH_SHORT).show();
