@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -48,7 +49,8 @@ public class ImageReceiver extends Activity {
     
     public void handleSendImage(Intent intent) {
         Uri imageUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-        saveImage(imageUri);
+//        saveImage(imageUri);
+        new SaveTask().execute(imageUri);
     }
 
     public void handleSendMultipleImages(Intent intent) {
@@ -56,7 +58,8 @@ public class ImageReceiver extends Activity {
         if(imageUris != null) {
             // Add images to database, copy to private file directory
             for(int i=0; i < imageUris.size(); i++) {
-                saveImage(imageUris.get(i));
+//                saveImage(imageUris.get(i));
+                new SaveTask().execute(imageUris.get(i));
             }
         }
     }
@@ -97,6 +100,53 @@ public class ImageReceiver extends Activity {
             }
 
             finish();
+        }
+    }
+    
+    private class SaveTask extends AsyncTask<Uri, Void, Void> {
+        
+        public Void doInBackground(Uri... params)  {
+            for(Uri u : params) {
+                if(u != null) {
+                    // Add image to database, copy to private file directory
+
+                    String path = Util.createFilename(getApplicationContext());
+                    Log.v("Vault", "saving picture to " + path);
+                    File f = new File(path);
+                    Picture sentPic = new Picture(path);
+                    try {
+                        FileOutputStream fos = new FileOutputStream(f);
+                        Bitmap bmp = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), u);
+                        Log.d("Vault", "image is " + bmp.getHeight() + " pixels tall");
+
+                        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                        bmp.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+
+                        fos.write(outputStream.toByteArray());
+
+                        outputStream.close();
+                        fos.close();
+                    } catch(FileNotFoundException fnfe) {
+                        Log.e("Vault", "file not found", fnfe);
+                    } catch(IOException ioe) {
+                        Log.e("Vault", "ioe", ioe);
+                    }
+
+                    Database db = new Database(getApplicationContext());
+                    boolean res = db.addPicture(sentPic);
+
+                    if(res) {
+                        Toast.makeText(getApplicationContext(), "Locked away", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Problem saving", Toast.LENGTH_SHORT).show();
+                    }
+
+                    finish();
+                }
+            }
+            
+            
+            return null;
         }
     }
 }
